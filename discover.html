@@ -1,394 +1,188 @@
-<!DOCTYPE html>
-<html lang="en">
-  <script> src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
 
-  <title>FollowBoost - Discover Channels</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #f0f2f5;
-      font-family: Arial, sans-serif;
-      color: #111;
-    }
-
-    .header {
-      background: #075e54;
-      color: white;
-      padding: 22px 20px;
-    }
-
-    .header-inner {
-      max-width: 700px;
-      margin: auto;
-    }
-
-    .logo {
-      font-size: 27px;
-      font-weight: bold;
-    }
-
-    .subtitle {
-      margin-top: 7px;
-      opacity: 0.9;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .search {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      outline: none;
-    }
-
-    .categories {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 15px;
-    }
-
-    .category {
-      border: none;
-      background: white;
-      padding: 11px 15px;
-      border-radius: 20px;
-      white-space: nowrap;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .category.active {
-      background: #075e54;
-      color: white;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    .channel-name {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    .category-name {
-      display: inline-block;
-      background: #e8f5e9;
-      color: #075e54;
-      padding: 5px 9px;
-      border-radius: 8px;
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
-
-    .description {
-      color: #666;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .follow {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      background: #25d366;
-      color: white;
-      text-align: center;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-
-    .empty {
-      background: white;
-      padding: 25px;
-      border-radius: 16px;
-      text-align: center;
-      color: #666;
-    }
-
-    .back {
-      display: block;
-      text-align: center;
-      margin-top: 25px;
-      color: #075e54;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="header">
-    <div class="header-inner">
-
-      <div class="logo">
-        FollowBoost 🚀
-      </div>
-
-      <div class="subtitle">
-        Discover WhatsApp Channels
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="container">
-
-    <input
-      id="search"
-      class="search"
-      type="text"
-      placeholder="🔎 Search channels..."
-      oninput="filterChannels()"
-    >
-
-
-    <div class="categories">
-
-      <button class="category active" onclick="selectCategory('All', this)">
-        🌍 All
-      </button>
-
-      <button class="category" onclick="selectCategory('Zimbabwe', this)">
-        🇿🇼 Zimbabwe
-      </button>
-
-      <button class="category" onclick="selectCategory('Music', this)">
-        🎵 Music
-      </button>
-
-      <button class="category" onclick="selectCategory('Sports', this)">
-        ⚽ Sports
-      </button>
-
-      <button class="category" onclick="selectCategory('Entertainment', this)">
-        😂 Entertainment
-      </button>
-
-      <button class="category" onclick="selectCategory('Business', this)">
-        💼 Business
-      </button>
-
-      <button class="category" onclick="selectCategory('News', this)">
-        📰 News
-      </button>
-
-    </div>
-
-
-    <div id="channels"></div>
-
-
-    <a class="back" href="index.html">
-      ← Back to Home
-    </a>
-
-  </div>
-
-
-  <script>
-
-    const channels = [
-
-      {
-        name: "Zimbabwe Updates 🇿🇼",
-        description: "Zimbabwe news, trends and daily updates.",
-        category: "Zimbabwe",
-        link: "https://whatsapp.com/channel/"
-      },
-
-      {
-        name: "Zim News Daily 📰",
-        description: "Latest Zimbabwe news and important updates.",
-        category: "News",
-        link: "https://whatsapp.com/channel/"
-      },
-
-      {
-        name: "Music Zone 🎵",
-        description: "Music, artists and entertainment updates.",
-        category: "Music",
-        link: "https://whatsapp.com/channel/"
-      },
-
-      {
-        name: "Football Hub ⚽",
-        description: "Football news, results and updates.",
-        category: "Sports",
-        link: "https://whatsapp.com/channel/"
-      },
-
-      {
-        name: "Funny Moments 😂",
-        description: "Funny videos, jokes and entertainment.",
-        category: "Entertainment",
-        link: "https://whatsapp.com/channel/"
-      },
-
-      {
-        name: "Business Africa 💼",
-        description: "Business ideas, opportunities and updates.",
-        category: "Business",
-        link: "https://whatsapp.com/channel/"
-      }
-
-    ];
-
-
-    let selectedCategory = "All";
-
-
-    function displayChannels(list) {
-
-      const container =
-        document.getElementById("channels");
-
-      container.innerHTML = "";
-
-
-      if (list.length === 0) {
-
-        container.innerHTML = `
-          <div class="empty">
-            😕 No channels found.
-            <br><br>
-            Try another search or category.
-          </div>
-        `;
-
-        return;
-      }
-
-
-      list.forEach(channel => {
-
-        const card =
-          document.createElement("div");
-
-        card.className = "card";
-
-
-        card.innerHTML = `
-
-          <div class="channel-name">
-            ${channel.name}
-          </div>
-
-          <div class="category-name">
-            ${channel.category}
-          </div>
-
-          <div class="description">
-            ${channel.description}
-          </div>
-
-          <a
-            class="follow"
-            href="${channel.link}"
-            target="_blank"
-            rel="noopener"
-          >
-            Follow Channel 🚀
-          </a>
-
-        `;
-
-
-        container.appendChild(card);
-
-      });
-
-    }
-
-
-    function filterChannels() {
-
-      const search =
-        document
-        .getElementById("search")
-        .value
-        .toLowerCase()
-        .trim();
-
-
-      const filtered =
-        channels.filter(channel => {
-
-          const matchesSearch =
-            channel.name
-              .toLowerCase()
-              .includes(search) ||
-
-            channel.description
-              .toLowerCase()
-              .includes(search);
-
-
-          const matchesCategory =
-            selectedCategory === "All" ||
-            channel.category === selectedCategory;
-
-
-          return matchesSearch && matchesCategory;
-
-        });
-
-
-      displayChannels(filtered);
-
-    }
-
-
-    function selectCategory(category, button) {
-
-      selectedCategory = category;
-
-
-      document
-        .querySelectorAll(".category")
-        .forEach(btn => {
-          btn.classList.remove("active");
-        });
-
-
-      button.classList.add("active");
-
-
-      filterChannels();
-
-    }
-
-
-    displayChannels(channels);
-
-  </script>
 const SUPABASE_URL = "https://zascjrrvukrdgydqwyqa.supabase.co";
 const SUPABASE_KEY = "sb_publishable_tXet8cUNY_eEEVUQ-eHW5A_ziO_w4Xw";
-</body>
-</html>
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+let channels = [];
+let selectedCategory = "All";
+
+
+async function loadChannels() {
+
+  const container = document.getElementById("channels");
+
+  container.innerHTML = `
+    <div class="empty">
+      Loading channels... ⏳
+    </div>
+  `;
+
+  const { data, error } = await supabase
+    .from("channels")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="empty">
+        ❌ Could not load channels.
+        <br><br>
+        Please try again.
+      </div>
+    `;
+
+    return;
+  }
+
+  channels = data || [];
+
+  filterChannels();
+}
+
+
+function displayChannels(list) {
+
+  const container =
+    document.getElementById("channels");
+
+  container.innerHTML = "";
+
+
+  if (list.length === 0) {
+
+    container.innerHTML = `
+      <div class="empty">
+        😕 No channels found.
+        <br><br>
+        Add the first channel!
+      </div>
+    `;
+
+    return;
+  }
+
+
+  list.forEach(channel => {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "card";
+
+
+    card.innerHTML = `
+
+      <div class="channel-name">
+        ${escapeHTML(channel.name)}
+      </div>
+
+      <div class="category-name">
+        ${escapeHTML(channel.category || "General")}
+      </div>
+
+      <div class="description">
+        ${escapeHTML(channel.description || "WhatsApp Channel")}
+      </div>
+
+      <a
+        class="follow"
+        href="${escapeHTML(channel.link)}"
+        target="_blank"
+        rel="noopener"
+      >
+        Follow Channel 🚀
+      </a>
+
+    `;
+
+
+    container.appendChild(card);
+
+  });
+
+}
+
+
+function filterChannels() {
+
+  const search =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const filtered =
+    channels.filter(channel => {
+
+      const name =
+        (channel.name || "").toLowerCase();
+
+      const description =
+        (channel.description || "").toLowerCase();
+
+
+      const matchesSearch =
+        name.includes(search) ||
+        description.includes(search);
+
+
+      const matchesCategory =
+        selectedCategory === "All" ||
+        channel.category === selectedCategory;
+
+
+      return matchesSearch && matchesCategory;
+
+    });
+
+
+  displayChannels(filtered);
+
+}
+
+
+function selectCategory(category, button) {
+
+  selectedCategory = category;
+
+
+  document
+    .querySelectorAll(".category")
+    .forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+
+  button.classList.add("active");
+
+
+  filterChannels();
+
+}
+
+
+function escapeHTML(text) {
+
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+loadChannels();
+
+</script>
