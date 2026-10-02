@@ -21,7 +21,7 @@
     .header {
       background: #075e54;
       color: white;
-      padding: 20px;
+      padding: 22px 20px;
     }
 
     .header-inner {
@@ -30,12 +30,12 @@
     }
 
     .logo {
-      font-size: 25px;
+      font-size: 27px;
       font-weight: bold;
     }
 
     .subtitle {
-      margin-top: 8px;
+      margin-top: 7px;
       opacity: 0.9;
     }
 
@@ -47,19 +47,20 @@
 
     .search {
       width: 100%;
-      padding: 15px;
+      padding: 16px;
       border: none;
       border-radius: 12px;
       font-size: 16px;
       margin-bottom: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      outline: none;
     }
 
     .card {
       background: white;
-      padding: 18px;
+      padding: 20px;
       border-radius: 16px;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
@@ -72,7 +73,7 @@
     .description {
       color: #666;
       line-height: 1.5;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
 
     .follow {
@@ -114,12 +115,16 @@
 
   <div class="header">
     <div class="header-inner">
-      <div class="logo">FollowBoost 🚀</div>
+      <div class="logo">
+        FollowBoost 🚀
+      </div>
+
       <div class="subtitle">
         Discover WhatsApp Channels
       </div>
     </div>
   </div>
+
 
   <div class="container">
 
@@ -127,4 +132,25 @@
       id="search"
       class="search"
       type="text"
-      placeholder="
+      placeholder="🔎 Search channels..."
+      oninput="searchChannels()"
+    >
+
+
+    <div id="channels"></div>
+
+
+    <a class="back" href="index.html">
+      ← Back to Home
+    </a>
+
+  </div>
+
+
+  <script>
+
+    const channels = [
+
+      {
+        name: "Zimbabwe Updates 🇿🇼",
+        description: "Zimbabwe news, trends and daily updates
