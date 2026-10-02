@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FollowBoost - Add Channel</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #075e54;
+      font-family: Arial, sans-serif;
+      color: #111;
+    }
+
+    .app {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .logo {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      padding: 20px 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    p {
+      color: #666;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #25d366;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #075e54;
+      text-decoration: none;
+    }
+
+    #message {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #e8f5e9;
+      color: #075e54;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <div class="logo">
+      FollowBoost 🚀
+    </div>
+
+    <div class="card">
+
+      <h1>Add Your Channel</h1>
+
+      <p>
+        Add your WhatsApp Channel so people can discover it.
+      </p>
+
+      <label for="channelName">
+        Channel Name
+      </label>
+
+      <input
+        id="channelName"
+        type="text"
+        placeholder="My WhatsApp Channel"
+      >
+
+      <label for="channelLink">
+        WhatsApp Channel Link
+      </label>
+
+      <input
+        id="channelLink"
+        type="url"
+        placeholder="https://whatsapp.com/channel/..."
+      >
+
+      <button onclick="saveChannel()">
+        Add Channel 🚀
+      </button>
+
+      <div id="message"></div>
+
+      <a class="back" href="index.html">
+        ← Back to Home
+      </a>
+
+    </div>
+
+  </div>
+
+  <script>
+    function saveChannel() {
+
+      const name =
+        document.getElementById("channelName").value.trim();
+
+      const link =
+        document.getElementById("channelLink").value.trim();
+
+      const message =
+        document.getElementById("message");
+
+      if (name === "" || link === "") {
+
+        message.style.display = "block";
+        message.textContent =
+          "Please enter your channel name and link.";
+
+        return;
+      }
+
+      if (!link.includes("whatsapp.com/channel/")) {
+
+        message.style.display = "block";
+        message.textContent =
+          "Please enter a WhatsApp Channel link.";
+
+        return;
+      }
+
+      const channel = {
+        name: name,
+        link: link
+      };
+
+      localStorage.setItem(
+        "followboostChannel",
+        JSON.stringify(channel)
+      );
+
+      message.style.display = "block";
+      message.textContent =
+        "Channel saved successfully! 🚀";
+
+    }
+  </script>
+
+</body>
+</html>
