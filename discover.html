@@ -51,9 +51,31 @@
       border: none;
       border-radius: 12px;
       font-size: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       outline: none;
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 15px;
+    }
+
+    .category {
+      border: none;
+      background: white;
+      padding: 11px 15px;
+      border-radius: 20px;
+      white-space: nowrap;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .category.active {
+      background: #075e54;
+      color: white;
     }
 
     .card {
@@ -67,7 +89,17 @@
     .channel-name {
       font-size: 20px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
+    }
+
+    .category-name {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #075e54;
+      padding: 5px 9px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 12px;
     }
 
     .description {
@@ -86,10 +118,6 @@
       text-decoration: none;
       border-radius: 10px;
       font-weight: bold;
-    }
-
-    .follow:hover {
-      opacity: 0.9;
     }
 
     .empty {
@@ -115,6 +143,7 @@
 
   <div class="header">
     <div class="header-inner">
+
       <div class="logo">
         FollowBoost 🚀
       </div>
@@ -122,6 +151,7 @@
       <div class="subtitle">
         Discover WhatsApp Channels
       </div>
+
     </div>
   </div>
 
@@ -133,8 +163,41 @@
       class="search"
       type="text"
       placeholder="🔎 Search channels..."
-      oninput="searchChannels()"
+      oninput="filterChannels()"
     >
+
+
+    <div class="categories">
+
+      <button class="category active" onclick="selectCategory('All', this)">
+        🌍 All
+      </button>
+
+      <button class="category" onclick="selectCategory('Zimbabwe', this)">
+        🇿🇼 Zimbabwe
+      </button>
+
+      <button class="category" onclick="selectCategory('Music', this)">
+        🎵 Music
+      </button>
+
+      <button class="category" onclick="selectCategory('Sports', this)">
+        ⚽ Sports
+      </button>
+
+      <button class="category" onclick="selectCategory('Entertainment', this)">
+        😂 Entertainment
+      </button>
+
+      <button class="category" onclick="selectCategory('Business', this)">
+        💼 Business
+      </button>
+
+      <button class="category" onclick="selectCategory('News', this)">
+        📰 News
+      </button>
+
+    </div>
 
 
     <div id="channels"></div>
@@ -153,4 +216,176 @@
 
       {
         name: "Zimbabwe Updates 🇿🇼",
-        description: "Zimbabwe news, trends and daily updates
+        description: "Zimbabwe news, trends and daily updates.",
+        category: "Zimbabwe",
+        link: "https://whatsapp.com/channel/"
+      },
+
+      {
+        name: "Zim News Daily 📰",
+        description: "Latest Zimbabwe news and important updates.",
+        category: "News",
+        link: "https://whatsapp.com/channel/"
+      },
+
+      {
+        name: "Music Zone 🎵",
+        description: "Music, artists and entertainment updates.",
+        category: "Music",
+        link: "https://whatsapp.com/channel/"
+      },
+
+      {
+        name: "Football Hub ⚽",
+        description: "Football news, results and updates.",
+        category: "Sports",
+        link: "https://whatsapp.com/channel/"
+      },
+
+      {
+        name: "Funny Moments 😂",
+        description: "Funny videos, jokes and entertainment.",
+        category: "Entertainment",
+        link: "https://whatsapp.com/channel/"
+      },
+
+      {
+        name: "Business Africa 💼",
+        description: "Business ideas, opportunities and updates.",
+        category: "Business",
+        link: "https://whatsapp.com/channel/"
+      }
+
+    ];
+
+
+    let selectedCategory = "All";
+
+
+    function displayChannels(list) {
+
+      const container =
+        document.getElementById("channels");
+
+      container.innerHTML = "";
+
+
+      if (list.length === 0) {
+
+        container.innerHTML = `
+          <div class="empty">
+            😕 No channels found.
+            <br><br>
+            Try another search or category.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      list.forEach(channel => {
+
+        const card =
+          document.createElement("div");
+
+        card.className = "card";
+
+
+        card.innerHTML = `
+
+          <div class="channel-name">
+            ${channel.name}
+          </div>
+
+          <div class="category-name">
+            ${channel.category}
+          </div>
+
+          <div class="description">
+            ${channel.description}
+          </div>
+
+          <a
+            class="follow"
+            href="${channel.link}"
+            target="_blank"
+            rel="noopener"
+          >
+            Follow Channel 🚀
+          </a>
+
+        `;
+
+
+        container.appendChild(card);
+
+      });
+
+    }
+
+
+    function filterChannels() {
+
+      const search =
+        document
+        .getElementById("search")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+      const filtered =
+        channels.filter(channel => {
+
+          const matchesSearch =
+            channel.name
+              .toLowerCase()
+              .includes(search) ||
+
+            channel.description
+              .toLowerCase()
+              .includes(search);
+
+
+          const matchesCategory =
+            selectedCategory === "All" ||
+            channel.category === selectedCategory;
+
+
+          return matchesSearch && matchesCategory;
+
+        });
+
+
+      displayChannels(filtered);
+
+    }
+
+
+    function selectCategory(category, button) {
+
+      selectedCategory = category;
+
+
+      document
+        .querySelectorAll(".category")
+        .forEach(btn => {
+          btn.classList.remove("active");
+        });
+
+
+      button.classList.add("active");
+
+
+      filterChannels();
+
+    }
+
+
+    displayChannels(channels);
+
+  </script>
+
+</body>
+</html>
